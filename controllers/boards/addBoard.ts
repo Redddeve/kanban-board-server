@@ -1,34 +1,23 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { Board } from '../../models/kanban';
+import { Board, Section } from '../../models/kanban';
 import ctrlWrapper from '../../utils/ctrlWrapper';
 
 const addBoard = async (req: Request, res: Response) => {
   const { name } = req.body;
 
   try {
-    const newBoard = new Board({
-      name,
-      sections: {
-        todo: {
-          title: 'To Do',
-          cards: [],
-          id: uuidv4(),
-        },
-        inProgress: {
-          title: 'In Progress',
-          cards: [],
-          id: uuidv4(),
-        },
-        done: {
-          title: 'Done',
-          cards: [],
-          id: uuidv4(),
-        },
-      },
-    });
+    const baseColsTitles = ['To Do', 'In Progress', 'Done'];
 
-    const result = await Board.create(newBoard);
+    const newBoard = new Board({ name });
+    const result = await newBoard.save();
+    const boardId = result._id;
+
+    for (const title of baseColsTitles) {
+      const newSection = new Section({ board: boardId, title });
+      await newSection.save();
+    }
+
+    await result.save();
 
     res.status(201).json(result);
   } catch (err) {

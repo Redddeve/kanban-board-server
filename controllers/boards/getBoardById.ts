@@ -1,18 +1,26 @@
 import { Request, Response } from 'express';
-import { Board } from '../../models/kanban';
+import { Board, Card, Section } from '../../models/kanban';
 import requestError from '../../utils/requestError';
 import ctrlWrapper from '../../utils/ctrlWrapper';
 
 const getBoardById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const result = await Board.findById(id);
+    const board = await Board.findById(id);
 
-    if (!result) {
-      return requestError(404, 'Not found');
+    if (!board) {
+      return requestError(404, 'Board not found');
     }
 
-    res.status(200).json(result);
+    const sections = await Section.find({ board: id });
+
+    for (const section of sections) {
+      const cards = await Card.find({ section: section._id }).sort('position');
+      section.cards = cards;
+    }
+    board.sections = sections;
+
+    res.status(200).json(board);
   } catch (err) {
     res.status(500).json({ error: err });
   }

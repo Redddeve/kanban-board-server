@@ -14,34 +14,22 @@ const updatePosition = async (req: Request, res: Response) => {
 
     if (sourceColId !== destColId) {
       for (const key in sourceList) {
-        await Card.findByIdAndUpdate(sourceList[key]._id, {
-          $set: { position: key },
-        });
+        await Card.findByIdAndUpdate(
+          sourceList[key]._id,
+          { position: key },
+          { new: true },
+        );
       }
     }
     for (const key in destList) {
-      await Card.findByIdAndUpdate(destList[key]._id, {
-        $set: { section: destColId, position: key },
-      });
-    }
-    const sourceCards = await Card.find({ section: sourceColId }).sort(
-      'position',
-    );
-    const destCards = await Card.find({ section: destColId }).sort('position');
-
-    for (const key in board.sections) {
-      if (board.sections[key].id === sourceColId) {
-        board.sections[key].cards = sourceCards;
-      }
-
-      if (board.sections[key].id === destColId) {
-        board.sections[key].cards = destCards;
-      }
-
-      await board.save();
+      await Card.findByIdAndUpdate(
+        destList[key]._id,
+        { section: destColId, position: key },
+        { new: true },
+      );
     }
 
-    res.status(200).json(board);
+    res.status(200).json({ message: 'updated' });
   } catch (err) {
     res.status(500).json(err);
   }

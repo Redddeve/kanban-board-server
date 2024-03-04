@@ -1,6 +1,9 @@
 import { Schema } from 'mongoose';
 
-export const schemaOptions = { versionKey: false, timestamps: true };
+export const schemaOptions = {
+  versionKey: false,
+  timestamps: true,
+};
 
 export const cardSchema = new Schema(
   {
@@ -10,7 +13,8 @@ export const cardSchema = new Schema(
       required: true,
     },
     section: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Section',
       required: true,
     },
     title: {
@@ -25,6 +29,15 @@ export const cardSchema = new Schema(
       type: Number,
     },
   },
+  { versionKey: false },
+);
+
+export const sectionSchema = new Schema(
+  {
+    board: { type: Schema.Types.ObjectId, ref: 'Board', required: true },
+    title: { type: String, required: true },
+    cards: { type: Array },
+  },
   schemaOptions,
 );
 
@@ -34,23 +47,7 @@ export const boardSchema = new Schema(
       type: String,
       required: true,
     },
-    sections: {
-      todo: {
-        id: { type: String, required: true },
-        cards: [cardSchema],
-        title: { type: String, required: true },
-      },
-      inProgress: {
-        id: { type: String, required: true },
-        cards: [cardSchema],
-        title: { type: String, required: true },
-      },
-      done: {
-        id: { type: String, required: true },
-        cards: [cardSchema],
-        title: { type: String, required: true },
-      },
-    },
+    sections: { type: Array },
   },
   schemaOptions,
 );
