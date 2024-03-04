@@ -14,7 +14,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strictNullChecks": true,
-    "target": "es2019"
+    "target": "es2019",
+    "types": ["node"]
   },
   "include": ["**/*.ts", "**/*.json", "./types/*.d.ts", ".eslintrc.js"]
 }
