@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "main": "./dist/server.js",
   "scripts": {
-    "build": "npm i && tsc && npm start",
+    "build": "npm i && tsc",
     "start": "cross-env NODE_ENV=production node ./dist/server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --exec ts-node ./server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0"
   },
   "keywords": [],
   "author": "",
