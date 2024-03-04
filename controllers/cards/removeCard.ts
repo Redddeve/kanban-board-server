@@ -22,7 +22,7 @@ const removeCard = async (req: Request, res: Response) => {
       });
     }
 
-    res.status(200).json({ message: 'deleted' });
+    res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: err });
   }

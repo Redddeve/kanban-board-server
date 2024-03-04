@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Board } from '../../models/kanban';
+import { Board, Card, Section } from '../../models/kanban';
 import requestError from '../../utils/requestError';
 import ctrlWrapper from '../../utils/ctrlWrapper';
 
@@ -7,11 +7,15 @@ const removeBoard = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const result = await Board.findById(id);
+    const board = await Board.findById(id);
 
-    if (!result) {
+    if (!board) {
       return requestError(404, 'Not found');
     }
+
+    await Section.deleteMany({ board: id });
+
+    await Card.deleteMany({ board: id });
 
     await Board.findByIdAndDelete(id);
 
